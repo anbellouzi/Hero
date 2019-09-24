@@ -10,7 +10,7 @@ class Ability:
         return attack
 
 
-import random
+# import random
 class Armor:
     # Required properties are defined inside the __init__ constructor method
     def __init__(self, name, max_block):
@@ -26,14 +26,23 @@ class Armor:
 # Superheros.py
 class Hero:
     # Required properties are defined inside the __init__ constructor method
-    def __init__(self, name, starting_health=100):
+    def __init__(self, name, starting_health):
         self.name = name
-        self.current_health = starting_health
+        self.starting_health = starting_health
+        self.current_health = self.starting_health
         self.abilities = list()
         self.armors = list()
-        self.starting_health = starting_health
 
+    # setter for updating current health
+    def set_current_health(self, new_health):
+        self.current_health = new_health
 
+    # returns the value of current health
+    def get_current_health(self):
+        return self.current_health
+
+    def get_armors(self):
+        return self.armors
 
     def add_ability(self, ability):
         self.abilities.append(ability)
@@ -48,28 +57,47 @@ class Hero:
         '''
         # TODO: This method should run Ability.attack() on every ability
         # in self.abilities and returns the total as an integer.
-        damage = 0
+        total_damage = 0
         for ability in self.abilities:
-            damage += ability.attack()
+            total_damage += ability.attack()
 
-        return damage
+        return total_damage
 
     def defand(self, damage_amt):
         '''Runs `block` method on each armor. Returns sum of all blocks'''
         # TODO: This method should run the block method on each armor in self.armors
-        sum = 0
-
+        total_armors = 0
+        armors = self.get_armors()
         if armors:
             for armor in armors:
-                sum += armor.block()
+                total_armors += armor.block()
+
+
+        return damage_amt - total_armors
+
+
+    def take_damage(self, damage):
+        '''Updates self.current_health to reflect the damage minus the defense.
+        '''
+        # TODO: Create a method that updates self.current_health to the current
+        # minus the the amount returned from calling self.defend(damage).
+        new_health = self.get_current_health() - self.defand(damage)
+        self.set_current_health(new_health)
+
+    def is_alive(self):
+      '''Return True or False depending on whether the hero is alive or not.
+      '''
+      # TODO: Check whether the hero is alive and return true or false
+      pass
+
 
 
 if __name__ == "__main__":
     # If you run this file from the terminal
     # this block of code is executed.
-    ability = Ability("Great Debugging", 50)
-    another_ability = Ability("Smarty Pants", 90)
     hero = Hero("Grace Hopper", 200)
-    hero.add_ability(ability)
-    hero.add_ability(another_ability)
-    print(hero.attack())
+    print("Hero current health before: "+str(hero.current_health))
+    shield = Armor("Shield", 50)
+    hero.add_armor(shield)
+    hero.take_damage(50)
+    print("Hero current health after: "+str(hero.current_health))
