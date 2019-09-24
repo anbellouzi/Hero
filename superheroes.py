@@ -3,14 +3,14 @@ class Ability:
     # Required properties are defined inside the __init__ constructor method
     def __init__(self, name, attack_strength):
         self.name = name
-        self.attack_strength = attack_strength
+        self.max_damage = attack_strength
 
     def attack(self):
-        attack = random.randint(0, self.attack_strength)
+        attack = random.randint(0, self.max_damage)
         return attack
 
 
-# import random
+# armor class
 class Armor:
     # Required properties are defined inside the __init__ constructor method
     def __init__(self, name, max_block):
@@ -21,6 +21,42 @@ class Armor:
     def block(self):
         block = random.randint(0, self.max_block)
         return block
+
+# weapon class
+class Weapon(Ability):
+    def attack(self):
+        """  This method returns a random value
+        between one half to the full attack power of the weapon.
+        """
+        # TODO: Use what you learned to complete this method.
+        half_power = self.max_damage // 2
+        return random.randint(half_power, self.max_damage)
+
+
+# Team class
+class Team:
+    # Required properties are defined inside the __init__ constructor method
+    def __init__(self, name):
+        self.name = name
+        self.heroes = []
+
+    # adds a hero to heroes list
+    def add_hero(self, hero):
+        self.heroes.append(hero)
+
+    # remove a hero from heroes list
+    def remove_hero(self, name):
+        for hero in self.heroes:
+            if hero.name == name:
+                self.heroes.remove(hero)
+                break
+        return 0
+
+    def view_all_heroes(self):
+        '''Prints out all heroes to the console.'''
+        # TODO: Loop over the list of heroes and print their names to the terminal.
+        for hero in self.heroes:
+            print(hero.name)
 
 
 # Superheros.py
