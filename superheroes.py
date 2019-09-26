@@ -46,8 +46,6 @@ class Arena:
         else:
             hero = Hero(hero_name, health)
 
-        # print("hero 1 {}".format(hero))
-        # adding abilities to hero
         print("")
         ability_1 = input("Would you like to add abilities to your hero: y/n ")
         if 'y' in ability_1.lower():
@@ -60,8 +58,6 @@ class Arena:
                 if "n" in ability_2.lower():
                     break
 
-        # print("hero 12 {}".format(hero))
-        # adding armor to hero
         print("")
         armor_1 = input("Would you like to add armors to your hero: y/n ")
         if 'y' in armor_1.lower():
@@ -73,8 +69,6 @@ class Arena:
                 armor_2 = input("Would you like to add another armor to your hero: y/n ")
                 if "n" in armor_2.lower():
                     break
-
-        # print("hero 13 {}".format(hero))
 
         return hero
 
@@ -178,35 +172,11 @@ class Team:
 
     # Keep all your current code, but add these methods
     def attack(self, other_team):
-
         while len(self.live_heroes()) > 0 and len(other_team.live_heroes()) > 0:
             local_hero = choice(self.live_heroes())
             enemy_hero = choice(other_team.live_heroes())
-
-            # if len(local_hero.abilities) > 0 and len(enemy_hero.abilities) > 0:
             print("{} is fighting {}".format(local_hero.name, enemy_hero.name))
             local_hero.fight(enemy_hero)
-
-
-
-
-
-
-        # while True:
-        #     my_live_heroes = self.live_heroes()
-        #     other_live_heroes = other_team.live_heroes()
-        #
-        #     if len(my_live_heroes) > 0 and len(other_live_heroes) > 0:
-        #
-        #         my_hero = choice(my_live_heroes)
-        #         opponent = choice(other_live_heroes)
-        #         my_hero.fight(opponent)
-        #
-        #         # print("hello")
-        #     else:
-        #         break
-
-
 
     def revive_heroes(self, health=100):
         for hero in self.heroes:
