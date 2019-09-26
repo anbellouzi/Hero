@@ -1,226 +1,19 @@
 from random import randint, choice
 import random
 
-# ability class
-class Ability:
-    # Required properties are defined inside the __init__ constructor method
-    def __init__(self, name, attack_strength):
-        self.name = name
-        self.max_damage = attack_strength
-
-    def attack(self):
-        attack = random.randint(0, self.max_damage)
-        return attack
-
-# armor class
-class Armor:
-    # Required properties are defined inside the __init__ constructor method
-    def __init__(self, name, max_block):
-        self.name = name
-        self.max_block = max_block
-
-
-    def block(self):
-        block = random.randint(0, self.max_block)
-        return block
-
-# weapon class
-class Weapon(Ability):
-
-    def attack(self):
-        half_power = self.max_damage // 2
-        return random.randint(half_power, self.max_damage)
-
-# Team class
-class Team:
-    # Required properties are defined inside the __init__ constructor method
-    def __init__(self, name):
-        self.name = name
-        self.heroes = []
-
-    # adds a hero to heroes list
-    def add_hero(self, hero):
-        self.heroes.append(hero)
-
-    # remove a hero from heroes list
-    def remove_hero(self, name):
-        for hero in self.heroes:
-            if hero.name == name:
-                self.heroes.remove(hero)
-                break
-        return 0
-
-    def view_all_heroes(self):
-        '''Prints out all heroes to the console.'''
-        # TODO: Loop over the list of heroes and print their names to the terminal.
-        for hero in self.heroes:
-            print(hero.name)
-
-
-    # Keep all your current code, but add these methods
-    def attack(self, other_team):
-
-        while True:
-            my_live_heroes = self.live_heroes()
-            other_live_heroes = other_team.live_heroes()
-
-            if len(my_live_heroes) > 0 and len(other_live_heroes) > 0:
-                my_hero = choice(my_live_heroes)
-                opponent = choice(other_live_heroes)
-                my_hero.fight(opponent)
-            else:
-                return False
-
-
-
-    def live_heroes(self):
-        heroes_alive = []
-        for hero in self.heroes:
-            if hero.is_alive():
-                heroes_alive.append(hero)
-        return heroes_alive
-
-    def revive_heroes(self, health=100):
-        for hero in self.heroes:
-            hero.set_current_health = health
-
-    def stats(self):
-        for hero in heroes:
-            hero.show_stats()
-
-# hero class
-class Hero:
-    # Required properties are defined inside the __init__ constructor method
-    def __init__(self, name, starting_health=100, health=100):
-        self.name = name
-        self.starting_health = starting_health
-        self.current_health = self.starting_health
-        self.abilities = list()
-        self.armors = list()
-        self.deaths = 0
-        self.kills = 0
-
-    # update kills
-    def add_kill(self, num_kills):
-        self.kills += num_kills
-
-    # update deaths
-    def add_death(self, num_deaths):
-        self.deaths += num_deaths
-
-    # add weapons to self.abilities
-    def add_weapon(self, weapon):
-        self.abilities.append(weapon)
-
-    # add armors to self.armors
-    def add_armor(self, armor):
-        self.armors.append(armor)
-
-    # setter for updating current health
-    def set_current_health(self, new_health):
-        self.current_health = new_health
-
-    # returns the value of current health
-    def get_current_health(self):
-        return self.current_health
-
-    # getter for armors
-    def get_armors(self):
-        return self.armors
-
-    # getter for abilities
-    def get_abilities(self):
-        return self.abilities
-
-    # getter for name
-    def get_name(self):
-        return self.name
-
-    # add ability
-    def add_ability(self, ability):
-        self.abilities.append(ability)
-
-    # add armors
-    def add_armor(self, armor):
-        self.armors.append(armor)
-
-    # display hero stats to console
-    def show_stats(self):
-        if self.deaths > 0:
-            ratio = self.kills // self.deaths
-            print("{} has {} ratio of kills/deaths".format(self.name, ratio))
-        else:
-            print("{} has ratio kills/deaths of {}".format(self.name, self.kills))
-
-
-    def attack(self):
-        total_damage = 0
-        abilities = self.get_abilities()
-        if abilities:
-            for ability in self.abilities:
-                total_damage += ability.attack()
-
-        else:
-            print(self.get_name()+" has no abilities!")
-
-        return total_damage
-
-    def defend(self, damage_amt=0):
-        total_armors = 0
-        armors = self.get_armors()
-        if armors:
-            for armor in armors:
-                total_armors += armor.block()
-
-        return abs(total_armors - damage_amt)
-
-    def take_damage(self, damage):
-        new_health = self.get_current_health() - self.defend(damage)
-        self.set_current_health(new_health)
-
-    def is_alive(self):
-        if self.get_current_health() <= 0:
-          return False
-        else:
-          return True
-
-
-    def fight(self, opponent):
-        while True:
-            if self.get_abilities() and opponent.get_abilities():
-                if self.is_alive():
-                    opponent.take_damage(self.attack())
-                else:
-                    print(opponent.get_name()+" Won!")
-                    self.add_death(1)
-                    opponent.add_kill(1)
-                    return False
-
-                if opponent.is_alive():
-                    self.take_damage(opponent.attack())
-                else:
-                    print(self.get_name()+" Won!")
-                    opponent.add_death(1)
-                    self.add_kill(1)
-                    return False
-            else:
-                print("Draw")
-                return False
+# check if user input is a int value
+def input_number(user_input):
+    try:
+       val = int(user_input)
+    except ValueError:
+       return 0
+    return val
 
 # arena class
 class Arena:
     def __init__(self):
         self.team_one = Team("Team 1")
         self.team_two = Team("Team 2")
-
-    # check if user input is a int value
-    def input_number(user_input):
-        try:
-           val = int(user_input)
-        except ValueError:
-           print("That's not an int!")
-           return 0
-        return val
 
     # create ability for a hero
     def create_ability(self):
@@ -245,23 +38,356 @@ class Arena:
 
     # create a hero
     def create_hero(self):
-        hero_name = input("Name you would like to give to hero: ")
+        # creating hero
+        hero_name = input("Name for a hero: ")
         health = input_number(input("Enter hero starting health or leave blank for default(100): "))
         hero = Hero(hero_name, health)
+
+        # print("hero 1 {}".format(hero))
+        # adding abilities to hero
+        ability_1 = input("Would you like to add abilities to your hero: y/n ")
+        if 'y' in ability_1.lower():
+            while True:
+                ability = self.create_ability()
+                hero.add_ability(ability)
+                ability_2 = input("Would you like to add another ability to your hero: y/n ")
+                if "n" in ability_2.lower():
+                    break
+
+        # print("hero 12 {}".format(hero))
+        # adding armor to hero
+        armor_1 = input("Would you like to add armors to your hero: y/n ")
+        if 'y' in armor_1.lower():
+            while True:
+                armor = self.create_armor()
+                hero.add_armor(armor)
+                armor_2 = input("Would you like to add another armor to your hero: y/n ")
+                if "n" in armor_2.lower():
+                    break
+
+        # print("hero 13 {}".format(hero))
+
         return hero
+
+    # create team one
+    def build_team_one(self):
+        number_of_heroes = input_number(input("How many Heroes you would like on team one: "))
+        for count in range(number_of_heroes):
+            hero = self.create_hero()
+            self.team_one.add_hero(hero)
+
+    # create team two
+    def build_team_two(self):
+        number_of_heroes = input_number(input("How many Heroes you would like on team two: "))
+        for count in range(number_of_heroes):
+            hero = self.create_hero()
+            self.team_two.add_hero(hero)
+
+    # team one attacks team two
+    def team_battle(self):
+        self.team_one.attack(self.team_two)
+
+    # Display both teams stats
+    def show_stats(self):
+        self.team_one.stats()
+        self.team_two.stats()
+
+    def print_list(self):
+        print(self.team_one.heroes)
+
+# ability class
+class Ability:
+    # Required properties are defined inside the __init__ constructor method
+    def __init__(self, name, attack_strength):
+        self.name = name
+        self.max_damage = attack_strength
+
+    def attack(self):
+        attack = randint(0, self.max_damage)
+        return attack
+
+# weapon class
+class Weapon(Ability):
+
+    def attack(self):
+        half_power = self.max_damage // 2
+        return randint(half_power, self.max_damage)
+
+# armor class
+class Armor:
+    # Required properties are defined inside the __init__ constructor method
+    def __init__(self, name, max_block):
+        self.name = name
+        self.max_block = max_block
+
+
+    def block(self):
+        block = randint(0, self.max_block)
+        return block
+
+# Team class
+class Team:
+    # Required properties are defined inside the __init__ constructor method
+    def __init__(self, name):
+        self.name = name
+        self.heroes = []
+
+    # adds a hero to heroes list
+    def add_hero(self, hero):
+        self.heroes.append(hero)
+
+    # remove a hero from heroes list
+    def remove_hero(self, name):
+        for hero in self.heroes:
+            if hero.name == name:
+                self.heroes.remove(hero)
+                break
+        return 0
+
+    def view_all_heroes(self):
+        for hero in self.heroes:
+            print(hero.name)
+
+    def live_heroes(self):
+        heroes_alive = []
+        if self.heroes:
+            for hero in self.heroes:
+                if hero.current_health > 0:
+                    heroes_alive.append(hero)
+
+            return heroes_alive
+
+    # Keep all your current code, but add these methods
+    def attack(self, other_team):
+
+        while len(self.live_heroes()) > 0 and len(other_team.live_heroes()) > 0:
+            local_hero = choice(self.live_heroes())
+            enemy_hero = choice(other_team.live_heroes())
+
+            # if len(local_hero.abilities) > 0 and len(enemy_hero.abilities) > 0:
+            print("{} is fighting {}".format(local_hero.name, enemy_hero.name))
+            local_hero.fight(enemy_hero)
+
+
+
+
+
+
+        # while True:
+        #     my_live_heroes = self.live_heroes()
+        #     other_live_heroes = other_team.live_heroes()
+        #
+        #     if len(my_live_heroes) > 0 and len(other_live_heroes) > 0:
+        #
+        #         my_hero = choice(my_live_heroes)
+        #         opponent = choice(other_live_heroes)
+        #         my_hero.fight(opponent)
+        #
+        #         # print("hello")
+        #     else:
+        #         break
+
+
+
+    def revive_heroes(self, health=100):
+        for hero in self.heroes:
+            hero.set_current_health = health
+
+    def stats(self):
+        if self.heroes:
+            for hero in self.heroes:
+                hero.show_stats()
+
+# hero class
+class Hero:
+    # Required properties are defined inside the __init__ constructor method
+    def __init__(self, name, starting_health=100):
+        self.name = name
+        self.starting_health = starting_health
+        self.current_health = starting_health
+        self.abilities = []
+        self.armors = []
+        self.deaths = 0
+        self.kills = 0
+
+    # update kills
+    def add_kill(self, num_kills):
+        self.kills += num_kills
+        print("{} Added kills: {}".format(self.name, num_kills))
+
+    # update deaths
+    def add_death(self, num_deaths):
+        self.deaths += num_deaths
+        print("{} Added num_deaths: {}".format(self.name, num_deaths))
+
+    # add ability
+    def add_ability(self, ability):
+        self.abilities.append(ability)
+        print("{} added ability: {}".format(self.name, ability))
+
+    # add weapons to self.abilities
+    def add_weapon(self, weapon):
+        self.abilities.append(weapon)
+        print("{} added weapon: {}".format(self.name, weapon))
+
+    # add armors to self.armors
+    def add_armor(self, armor):
+        self.armors.append(armor)
+        print("{} added armor: {}".format(self.name, armor))
+
+    # setter for updating current health
+    def set_current_health(self, new_health):
+        self.current_health = new_health
+
+    # returns the value of current health
+    def get_current_health(self):
+        return self.current_health
+
+    # getter for armors
+    def get_armors(self):
+        return self.armors
+
+    # getter for abilities
+    def get_abilities(self):
+        return self.abilities
+
+    # getter for name
+    def get_name(self):
+        return self.name
+
+
+    def is_alive(self):
+        return self.current_health > 0
+
+    # display hero stats to console
+    def show_stats(self):
+        if self.deaths > 0:
+            ratio = self.kills // self.deaths
+            print("{} has ratio of {} kills/deaths".format(self.name, ratio))
+        else:
+            print("{} has ratio of {} kills/deaths".format(self.name, self.kills))
+
+
+    def attack(self):
+        total_damage = 0
+        if self.get_abilities():
+            for ability in self.get_abilities():
+                total_damage += ability.attack()
+
+        else:
+            print(self.get_name()+" has no abilities!")
+
+        return total_damage
+
+    def defend(self, damage=0):
+        total_armors = 0
+        if self.get_armors():
+            for armor in self.get_armors():
+                total_armors += int(armor.block())
+
+        return abs(total_armors - damage)
+
+    def take_damage(self, damage):
+
+
+        current_hp = self.current_health
+        damage_after_defend = self.defend(damage)
+        self.current_health = current_hp - damage_after_defend
+        print("{} took {} damage, damage after defend {} new health is {}".format(self.name, damage, damage_after_defend, self.current_health))
+
+
+    def fight(self, opponent):
+
+        while self.is_alive() and opponent.is_alive():
+            # if len(self.abilities) > 0 and len(opponent.abilities) > 0:
+
+            # if self.is_alive():
+            #     self_damage = self.attack()
+            #     print("{} attacked {} with damage amount {}".format(self.name,opponent.name ,self_damage))
+            #     opponent.take_damage(self_damage)
+            # else:
+            #     print(self.get_name()+" Won!")
+            #     opponent.add_kill(1)
+            #     print("opponent {} is dead".format(opponent.name))
+            #     self.add_death(1)
+            #
+            #
+            # if opponent.is_alive():
+            #     opponent_damage = opponent.attack()
+            #     print("{} attacked {} with damage amount {}".format(opponent.name, self.name,opponent_damage))
+            #     self.take_damage(opponent_damage)
+            #
+            # else:
+            #     print(self.get_name()+" Won!")
+            #     self.add_kill(1)
+            #     print("opponent {} is dead".format(opponent.name))
+            #     opponent.add_death(1)
+
+            self_damage = self.attack()
+            print("{} attacked {} with damage amount {}".format(self.name,opponent.name ,self_damage))
+            opponent.take_damage(self_damage)
+
+            opponent_damage = opponent.attack()
+            print("{} attacked {} with damage amount {}".format(opponent.name, self.name,opponent_damage))
+            self.take_damage(opponent.attack())
+
+            if opponent.is_alive() == False:
+                print(self.get_name()+" Won!")
+                self.add_kill(1)
+                print("opponent {} is dead".format(opponent.name))
+                opponent.add_death(1)
+
+
+            elif(self.is_alive() == False):
+                print(opponent.get_name()+" Won!")
+                opponent.add_kill(1)
+                print("Self {} is dead".format(self.name))
+                self.add_death(1)
+
+
+
+def test_one():
+    flash = Hero("Flash", 120)
+    flash_ability = Ability("Speed", 50)
+    flash_armor = Armor("Shield", 10)
+    flash.add_ability(flash_ability)
+    flash.add_armor(flash_armor)
+
+    arrow = Hero("Arrow", 150)
+    arrow_armor = Armor("sheild", 20)
+    arrow_ability = Ability("Arrows", 50)
+    arrow.add_ability(arrow_ability)
+    arrow.add_armor(arrow_armor)
+
+    while flash.is_alive() and arrow.is_alive():
+        flash.fight(arrow)
+
 
 
 if __name__ == "__main__":
     # If you run this file from the terminal
     # this block of code is executed.
-    hero1 = Hero("Wonder Woman")
-    hero2 = Hero("Dumbledore")
-    ability1 = Ability("Super Speed", 300)
-    ability2 = Ability("Super Eyes", 130)
-    ability3 = Ability("Wizard Wand", 8000)
-    ability4 = Ability("Wizard Beard", 2000)
-    hero1.add_ability(ability1)
-    hero1.add_ability(ability2)
-    hero2.add_ability(ability3)
-    hero2.add_ability(ability4)
-    hero1.fight(hero2)
+
+    # test_one()
+
+    game_is_running = True
+
+    # Instantiate Game Arena
+    arena = Arena()
+
+    # Build Teams
+    arena.build_team_one()
+    arena.build_team_two()
+
+    while game_is_running:
+
+        arena.team_battle()
+        arena.show_stats()
+        play_again = input("Play Again? Y or N: ")
+
+        # Check for Player Input
+        if play_again.lower() == "n":
+            game_is_running = False
+
+        else:
+            game_is_running = False
