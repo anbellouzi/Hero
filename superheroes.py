@@ -1,13 +1,17 @@
-from random import randint, choice
-import random
+from random import random, randint, choice
+import time
+import sys
+
+time_01 = 0.1
+time_025 = 0.25
+time_050 = 0.50
+time_1 = 1
 
 # check if user input is a int value
 def input_number(user_input):
-    try:
-       val = int(user_input)
-    except ValueError:
-       return 0
-    return val
+    while user_input.isdigit() == False:
+        user_input = input("Enter a number: ")
+    return int(user_input)
 
 # arena class
 class Arena:
@@ -49,48 +53,53 @@ class Arena:
         else:
             hero_name = input("Name for your {}th hero: ".format(count))
 
-        health = input_number(input("{} starting health (default:100Health): ".format(hero_name)))
-        if health == 0:
+        if not hero_name:
+            hero_name = "Hero"
+
+        # health = input_number(input("{} starting health (default:100Health): ".format(hero_name)))
+        health = input("{} starting health (default:100Health): ".format(hero_name))
+        try:
+           health = int(health)
+           hero = Hero(hero_name, health)
+        except ValueError:
             hero = Hero(hero_name)
-        else:
-            hero = Hero(hero_name, health)
 
         print("")
-        ability_1 = input("Create abilities to {}: y/n ".format(hero_name))
-        if 'y' in ability_1.lower():
-            print("Creating abilities for {} ....".format(hero.name))
+        ability_1 = input("Do you want create Ability to {}: y/n ".format(hero_name))
+        if ('y' or "") in ability_1.lower():
+            print("Creating Abilities for {} ....".format(hero.name))
             print("")
             while True:
                 ability = self.create_ability()
                 hero.add_ability(ability)
-                ability_2 = input("Do you want to create another ability: y/n ")
+                ability_2 = input("Create another Ability: y/n ")
                 if "n" in ability_2.lower():
                     break
                 print("")
 
 
         print("")
-        weapon_1 = input("Create weapon for {}: y/n ".format(hero_name))
-        if 'y' in weapon_1.lower():
-            print("Creating weapon for {} ....".format(hero.name))
+        weapon_1 = input("Do you want to create Weapon for {}: y/n ".format(hero_name))
+        if ('y' or "") in weapon_1.lower():
+            print("Creating Weapon for {} ....".format(hero.name))
             print("")
             while True:
                 weapon = self.create_weapon()
                 hero.add_weapon(weapon)
-                weapon_2 = input("Do you want to create another weapon: y/n ")
+                weapon_2 = input("Create another Weapon: y/n ")
                 if "n" in weapon_2.lower():
                     break
                 print("")
 
         print("")
-        armor_1 = input("Create Armor for {}: y/n ".format(hero_name))
-        if 'y' in armor_1.lower():
-            print("Creating armor for {} ....".format(hero.name))
+        armor_1 = input("Do you want to create Armor for {}: y/n ".format(hero_name))
+        if ('y' or "") in armor_1.lower():
+            print("Creating Armor for {} ....".format(hero.name))
             print("")
             while True:
                 armor = self.create_armor()
                 hero.add_armor(armor)
-                armor_2 = input("Do you want to create another armor: y/n ")
+                armor_2 = input("Create another Armor: y/n ")
                 if "n" in armor_2.lower():
                     break
                 print("")
@@ -139,36 +148,6 @@ class Arena:
     def print_list(self):
         print(self.team_one.heroes)
 
-# ability class
-class Ability:
-    # Required properties are defined inside the __init__ constructor method
-    def __init__(self, name, attack_strength):
-        self.name = name
-        self.max_damage = attack_strength
-
-    def attack(self):
-        attack = randint(0, self.max_damage)
-        return attack
-
-# weapon class
-class Weapon(Ability):
-
-    def attack(self):
-        half_power = self.max_damage // 2
-        return randint(half_power, self.max_damage)
-
-# armor class
-class Armor:
-    # Required properties are defined inside the __init__ constructor method
-    def __init__(self, name, max_block):
-        self.name = name
-        self.max_block = max_block
-
-
-    def block(self):
-        block = randint(0, self.max_block)
-        return block
-
 # Team class
 class Team:
     # Required properties are defined inside the __init__ constructor method
@@ -179,11 +158,12 @@ class Team:
     # adds a hero to heroes list
     def add_hero(self, hero):
         print("")
-        print("...... adding hero {} to {}".format(hero.name, self.name))
+        hero.stack_overflow()
         self.heroes.append(hero)
-        print("{} added to {} ".format(hero.name, self.name))
-        print("__________________________ √")
         print("")
+        print("{} added to {} √".format(hero.name, self.name))
+        print("")
+        time.sleep(time_025)
 
 
     # remove a hero from heroes list
@@ -213,22 +193,29 @@ class Team:
             local_hero = choice(self.live_heroes())
             enemy_hero = choice(other_team.live_heroes())
             print("")
+            time.sleep(time_050)
             print("          Team 1          ")
             self.view_all_heroes()
             print("")
+            time.sleep(time_050)
             print("          Team 2          ")
             other_team.view_all_heroes()
             print("__________________________")
             print("")
+            time.sleep(time_1)
 
             print("OPPONENTS".format(local_hero.name, enemy_hero.name))
+            time.sleep(time_050)
             print("           Hero           ")
             local_hero.show_status()
             print("")
+            time.sleep(time_050)
             print("           Enemy          ")
             enemy_hero.show_status()
             print("")
+            time.sleep(time_1)
             display_battle_art(local_hero.name, enemy_hero.name)
+            time.sleep(time_1)
             local_hero.fight(enemy_hero)
 
     def revive_heroes(self, health=100):
@@ -254,20 +241,32 @@ class Hero:
         print("")
         print("Name: {} | Health: {}HP".format(name, self.current_health))
 
+    def stack_overflow(self):
+        # Source: https://stackoverflow.com/questions/2122385/dynamic-terminal-printing-with-python
+        for i in range(10):
+            sys.stdout.write("\r{0}>".format("="*i))
+            sys.stdout.flush()
+            time.sleep(0.1)
+
+
+
     def show_status(self):
+        self.stack_overflow()
+        print()
         print("__________________________")
         print("Name: {} | Health: {}HP".format(self.name, self.current_health))
         if self.abilities:
             for ability in self.abilities:
-                if isinstance(ability, Ability):
+                if isinstance(ability, Weapon):
                     print("Weapon: {} | Max_damage: {}".format(ability.name, ability.max_damage))
                 else:
-                    print("Ability: {} | Max_damage: {}".format(ability.name, ability.max_block))
+                    print("Ability: {} | Max_damage: {}".format(ability.name, ability.max_damage))
 
         if self.armors:
             for armor in self.armors:
                 print("Armor: {} | Max_Block: {}".format(armor.name, armor.max_block))
         print("__________________________")
+        time.sleep(time_050)
 
     # update kills
     def add_kill(self, num_kills):
@@ -371,10 +370,14 @@ class Hero:
             self.current_health = current_Health - damage_after_defend
             blocked = damage - damage_after_defend
             print("{} blocked {} hits".format(self.name, blocked))
+            time.sleep(time_025)
             print("{} took {} damage hits".format(self.name, damage_after_defend))
+            time.sleep(time_025)
             print("{}'s current health: {}HP".format(self.name, self.current_health))
+            time.sleep(time_1)
         else:
             print("{} blocked all hits, health remains {}HP".format(self.name, self.current_health))
+            time.sleep(time_1)
 
 
     def fight(self, opponent):
@@ -385,37 +388,76 @@ class Hero:
             print("")
             if self_damage > 0:
                 print("{} attacked {} by {} damage hits".format(self.name,opponent.name ,self_damage))
+                time.sleep(time_025)
             else:
                 print("{} attacked {} but did no damage: {}".format(self.name,opponent.name ,self_damage))
+                time.sleep(time_025)
             opponent.take_damage(self_damage)
 
             opponent_damage = opponent.attack()
             print("")
             if opponent_damage > 0:
                 print("{} attacked {} by {} damage hits".format(opponent.name, self.name,opponent_damage))
+                time.sleep(time_025)
             else:
                 print("{} attacked {} but did no damage: {}".format(opponent.name, self.name,opponent_damage))
+                time.sleep(time_025)
             self.take_damage(opponent.attack())
 
             if opponent.is_alive() == False:
                 print("")
                 print("                            End Fight ")
                 print("")
+                time.sleep(time_050)
                 print(self.get_name()+" Won!")
+                time.sleep(time_025)
                 self.add_kill(1)
                 print("{} is dead".format(opponent.name))
+                time.sleep(time_025)
                 opponent.add_death(1)
+                time.sleep(time_050)
 
             elif(self.is_alive() == False):
                 print("")
                 print("                            End Fight")
                 print("")
+                time.sleep(time_1)
                 print(opponent.get_name()+" Won!")
                 opponent.add_kill(1)
+                time.sleep(time_025)
                 print("{} is dead".format(self.name))
                 self.add_death(1)
+                time.sleep(time_050)
+
+# ability class
+class Ability:
+    # Required properties are defined inside the __init__ constructor method
+    def __init__(self, name, attack_strength):
+        self.name = name
+        self.max_damage = attack_strength
+
+    def attack(self):
+        attack = randint(0, self.max_damage)
+        return attack
+
+# weapon class
+class Weapon(Ability):
+
+    def attack(self):
+        half_power = self.max_damage // 2
+        return randint(half_power, self.max_damage)
+
+# armor class
+class Armor:
+    # Required properties are defined inside the __init__ constructor method
+    def __init__(self, name, max_block):
+        self.name = name
+        self.max_block = max_block
 
 
+    def block(self):
+        block = randint(0, self.max_block)
+        return block
 
 def test_one():
     flash = Hero("Flash", 120)
@@ -435,8 +477,6 @@ def test_one():
 
     flash.show_stats()
     arrow.show_stats()
-
-    print(type(flash))
 
 def test_two():
     flash = Hero("Flash", 200)
@@ -468,7 +508,6 @@ def test_two():
 
     print(type(flash))
 
-
 def display_battle_art(hero, enemy):
     print("__________________________ {} VS {} __________________________".format(hero,enemy))
     print("")
@@ -497,8 +536,6 @@ if __name__ == "__main__":
     arena.build_team_two()
 
     while game_is_running:
-
-
 
         arena.team_battle()
         arena.show_stats()
