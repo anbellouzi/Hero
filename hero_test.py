@@ -7,6 +7,7 @@ import random
 
 # Helper Function
 
+superheroes.show_time = False
 
 def capture_console_output(function_body):
     # _io.StringIO object

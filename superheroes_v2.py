@@ -1,5 +1,21 @@
 from random import random, randint, choice
+import time
+import sys
 
+slow_time = False
+
+def time_01():
+    if show_time:
+        time.sleep(0.1)
+def time_025():
+    if show_time:
+        time.sleep(0.25)
+def time_050():
+    if show_time:
+        time.sleep(0.50)
+def time_1():
+    if show_time:
+        time.sleep(1)
 
 # check if user input is a int value
 def input_number(user_input):
@@ -152,10 +168,12 @@ class Team:
     # adds a hero to heroes list
     def add_hero(self, hero):
         print("")
+        hero.stack_overflow()
         self.heroes.append(hero)
         print("")
         print("{} added to {} √".format(hero.name, self.name))
         print("")
+        time_025()
 
 
     # remove a hero from heroes list
@@ -187,22 +205,29 @@ class Team:
             local_hero = choice(self.live_heroes())
             enemy_hero = choice(other_team.live_heroes())
             print("")
+            time_050()
             print("          Team 1          ")   #show team 1
             self.view_all_heroes()
             print("")
+            time_050()
             print("          Team 2          ")     #show team 2
             other_team.view_all_heroes()
             print("__________________________")
             print("")
+            time_01()
 
             print("OPPONENTS".format(local_hero.name, enemy_hero.name))
+            time_050()
             print("           Hero           ")
             local_hero.show_status()
             print("")
+            time_050()
             print("           Enemy          ")
             enemy_hero.show_status()
             print("")
+            time_01()
             display_battle_art(local_hero.name, enemy_hero.name)
+            time_1()
             local_hero.fight(enemy_hero)
 
     def revive_heroes(self, health=100):
@@ -228,8 +253,17 @@ class Hero:
         print("")
         print("Name: {} | Health: {}HP".format(name, self.current_health))
 
+    def stack_overflow(self):
+        # Source: https://stackoverflow.com/questions/2122385/dynamic-terminal-printing-with-python
+        for i in range(10):
+            sys.stdout.write("\r{0}>".format("-"*i))
+            sys.stdout.flush()
+            time.sleep(0.1)
+
+
 
     def show_status(self):
+        self.stack_overflow()
         print()
         print("__________________________")
         print("Name: {} | Health: {}HP".format(self.name, self.current_health))
@@ -244,6 +278,7 @@ class Hero:
             for armor in self.armors:
                 print("Armor: {} | Max_Block: {}".format(armor.name, armor.max_block))
         print("__________________________")
+        time_050()
 
     # update kills
     def add_kill(self, num_kills):
@@ -347,10 +382,14 @@ class Hero:
             self.current_health = current_Health - damage_after_defend
             blocked = damage - damage_after_defend
             print("{} blocked {} hits".format(self.name, blocked))
+            time_025()
             print("{} took {} damage hits".format(self.name, damage_after_defend))
+            time_025()
             print("{}'s current health: {}HP".format(self.name, self.current_health))
+            time_1()
         else:
             print("{} blocked all hits, health remains {}HP".format(self.name, self.current_health))
+            time_1()
 
 
     def fight(self, opponent):
@@ -361,35 +400,46 @@ class Hero:
             print("")
             if self_damage > 0:
                 print("{} attacked {} by {} damage hits".format(self.name,opponent.name ,self_damage))
+                time_025()
             else:
                 print("{} attacked {} but did no damage: {}".format(self.name,opponent.name ,self_damage))
+                time_025()
             opponent.take_damage(self_damage)
 
             opponent_damage = opponent.attack()
             print("")
             if opponent_damage > 0:
                 print("{} attacked {} by {} damage hits".format(opponent.name, self.name,opponent_damage))
+                time_025()
             else:
                 print("{} attacked {} but did no damage: {}".format(opponent.name, self.name,opponent_damage))
+                time_025()
             self.take_damage(opponent.attack())
 
             if opponent.is_alive() == False:
                 print("")
                 print("                            End Fight ")
                 print("")
+                time_050()
                 print(self.get_name()+" Won!")
+                time_025()
                 self.add_kill(1)
                 print("{} is dead".format(opponent.name))
+                time_025()
                 opponent.add_death(1)
+                time_050()
 
             elif(self.is_alive() == False):
                 print("")
                 print("                            End Fight")
                 print("")
+                time_1()
                 print(opponent.get_name()+" Won!")
                 opponent.add_kill(1)
+                time_025()
                 print("{} is dead".format(self.name))
                 self.add_death(1)
+                time_050()
 
 # ability class
 class Ability:
@@ -486,6 +536,7 @@ if __name__ == "__main__":
     # If you run this file from the terminal
     # this block of code is executed.
 
+    slow_time = True
     # test_one()
 
     game_is_running = True
@@ -504,7 +555,7 @@ if __name__ == "__main__":
         play_again = input("Play Again? Y or N: ")
 
         # Check for Player Input
-        if "n" in play_again.lower():
+        if play_again.lower() == "n":
             game_is_running = False
 
         else:
